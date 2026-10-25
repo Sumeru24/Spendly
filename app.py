@@ -2,8 +2,8 @@ import os
 import re
 import sqlite3
 
-from flask import Flask, flash, redirect, render_template, request, url_for
-from werkzeug.security import generate_password_hash
+from flask import Flask, flash, redirect, render_template, request, session, url_for
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from database.db import close_db, get_db, init_db, seed_db
 
@@ -36,6 +36,9 @@ def landing():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if session.get("user_id"):
+        return redirect(url_for("landing"))
+
     if request.method == "POST":
         name = request.form.get("name", "").strip()
         email = request.form.get("email", "").strip().lower()
@@ -81,8 +84,37 @@ def register():
     return render_template("register.html")
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
+    if session.get("user_id"):
+        return redirect(url_for("landing"))
+
+    if request.method == "POST":
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "")
+
+        error = None
+        if not email or not password:
+            error = "Invalid email or password."
+        else:
+            db = get_db()
+            user = db.execute(
+                "SELECT id, name, password_hash FROM users WHERE email = ?",
+                (email.lower(),),
+            ).fetchone()
+            if user is None or not check_password_hash(
+                user["password_hash"], password
+            ):
+                error = "Invalid email or password."
+
+        if error is None:
+            session.clear()
+            session["user_id"] = user["id"]
+            return redirect(url_for("landing"))
+
+        flash(error, "error")
+        return render_template("login.html", email=email)
+
     return render_template("login.html")
 
 
@@ -102,7 +134,9 @@ def privacy():
 
 @app.route("/logout")
 def logout():
-    return "Logout — coming in Step 3"
+    session.clear()
+    flash("You have been signed out.", "success")
+    return redirect(url_for("landing"))
 
 
 @app.route("/profile")
