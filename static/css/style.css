@@ -757,6 +757,102 @@ body.modal-open { overflow: hidden; }
     color: var(--ink-muted);
 }
 
+.profile-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 2.25rem;
+    background: var(--paper);
+    border-bottom: 1px solid var(--border);
+}
+
+.profile-filter-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.filter-preset {
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--paper-card);
+    color: var(--ink-muted);
+    font-size: 0.78rem;
+    font-weight: 500;
+    line-height: 1.4;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.filter-preset:hover {
+    background: var(--paper-warm);
+    color: var(--ink);
+}
+
+.filter-preset.is-active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--paper);
+}
+
+.filter-custom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.5rem;
+    padding: 0.25rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+}
+
+.filter-custom.is-active {
+    border-color: var(--accent);
+    background: var(--accent-light);
+}
+
+.filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: 0.72rem;
+    color: var(--ink-muted);
+}
+
+.filter-field input {
+    padding: 0.35rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--paper-card);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+}
+
+.filter-field input:focus {
+    outline: 2px solid var(--accent-light);
+    border-color: var(--accent);
+}
+
+.filter-apply {
+    padding: 0.4rem 0.85rem;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: var(--paper);
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.filter-apply:hover {
+    background: var(--ink-soft);
+    border-color: var(--ink-soft);
+}
+
 .profile-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -822,6 +918,28 @@ body.modal-open { overflow: hidden; }
     white-space: nowrap;
 }
 
+.profile-panel-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.btn-add-expense {
+    display: inline-block;
+    padding: 0.35rem 0.8rem;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: var(--paper);
+    font-size: 0.78rem;
+    font-weight: 500;
+    line-height: 1.4;
+    transition: background 0.15s ease;
+}
+
+.btn-add-expense:hover {
+    background: var(--ink);
+}
+
 .table-scroll {
     overflow-x: auto;
 }
@@ -884,6 +1002,41 @@ body.modal-open { overflow: hidden; }
     color: var(--ink);
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
+}
+
+.profile-table .txn-actions {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.txn-edit-link {
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.txn-edit-link:hover {
+    color: var(--ink);
+}
+
+.txn-actions form {
+    margin-left: 0.55rem;
+}
+
+.btn-delete {
+    appearance: none;
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--danger);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-delete:hover {
+    text-decoration: underline;
 }
 
 .badge {
@@ -1010,6 +1163,19 @@ body.modal-open { overflow: hidden; }
         text-align: center;
         padding: 1.5rem;
     }
+
+    .profile-filter {
+        align-items: stretch;
+        padding: 1rem 1.25rem;
+    }
+
+    .filter-custom { width: 100%; }
+
+    .filter-field {
+        flex: 1 1 8rem;
+    }
+
+    .filter-field input { width: 100%; }
 
     .profile-stats { grid-template-columns: 1fr; }
 

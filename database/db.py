@@ -57,18 +57,22 @@ def seed_db():
     init_db()
     db = get_db()
 
-    if db.execute("SELECT 1 FROM users LIMIT 1").fetchone() is not None:
-        print("Database already contains data; skipping seed.")
+    if db.execute(
+        "SELECT 1 FROM users WHERE email = ?", ("demo@spendly.com",)
+    ).fetchone() is not None:
+        print("Demo user already exists; skipping seed.")
         return
 
     today = date.today()
     expenses = [
-        (85.50, "Groceries", "Weekly supermarket run", today - timedelta(days=2)),
-        (32.00, "Transport", "Monthly transit pass", today - timedelta(days=5)),
-        (46.75, "Dining", "Dinner with friends", today - timedelta(days=8)),
-        (120.00, "Utilities", "Electricity bill", today - timedelta(days=12)),
-        (1200.00, "Rent", "Monthly rent", today - timedelta(days=15)),
-        (35.50, "Health", "Pharmacy", today - timedelta(days=20)),
+        (100.00, "Bills", "Electricity bill", today - timedelta(days=1)),
+        (80.00, "Bills", "Internet bill", today - timedelta(days=2)),
+        (65.50, "Groceries", "Weekly supermarket run", today - timedelta(days=3)),
+        (30.00, "Dining", "Dinner with friends", today - timedelta(days=4)),
+        (25.00, "Transport", "Monthly transit pass", today - timedelta(days=5)),
+        (20.00, "Health", "Pharmacy", today - timedelta(days=6)),
+        (15.00, "Entertainment", "Movie tickets", today - timedelta(days=7)),
+        (10.74, "Shopping", "Household items", today - timedelta(days=8)),
     ]
 
     with db:
@@ -76,8 +80,8 @@ def seed_db():
             "INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)",
             (
                 "Demo User",
-                "demo@spendly.test",
-                generate_password_hash("password123"),
+                "demo@spendly.com",
+                generate_password_hash("demo123"),
             ),
         )
         user_id = cursor.lastrowid
@@ -92,4 +96,4 @@ def seed_db():
             ],
         )
 
-    print("Seeded demo user: demo@spendly.test / password123")
+    print("Seeded demo user: demo@spendly.com / demo123")

@@ -22,6 +22,35 @@
                 </div>
             </div>
 
+            <div class="profile-filter" aria-label="Filter spending by date range">
+                <div class="profile-filter-presets" role="group" aria-label="Quick date ranges">
+                    {% for preset in presets %}
+                    {% if preset.date_from and preset.date_to %}
+                    <a href="{{ url_for('profile', date_from=preset.date_from, date_to=preset.date_to) }}"
+                       class="filter-preset{% if preset.active %} is-active{% endif %}"
+                       {% if preset.active %}aria-current="true"{% endif %}>{{ preset.label }}</a>
+                    {% else %}
+                    <a href="{{ url_for('profile') }}"
+                       class="filter-preset{% if preset.active %} is-active{% endif %}"
+                       {% if preset.active %}aria-current="true"{% endif %}>{{ preset.label }}</a>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <form class="filter-custom{% if custom_active %} is-active{% endif %}"
+                      method="GET"
+                      action="{{ url_for('profile') }}">
+                    <label class="filter-field">
+                        <span>From</span>
+                        <input type="date" name="date_from" value="{{ date_from }}" required>
+                    </label>
+                    <label class="filter-field">
+                        <span>To</span>
+                        <input type="date" name="date_to" value="{{ date_to }}" required>
+                    </label>
+                    <button type="submit" class="filter-apply">Apply</button>
+                </form>
+            </div>
+
             <div class="profile-stats">
                 <div class="stat-card">
                     <span class="stat-value">{{ stats.total_spent }}</span>
@@ -41,7 +70,10 @@
                 <div class="profile-panel" aria-labelledby="recent-transactions-title">
                     <div class="profile-panel-header">
                         <h2 class="profile-panel-title" id="recent-transactions-title">Recent transactions</h2>
-                        <span class="profile-panel-note">Latest {{ transactions|length }}</span>
+                        <div class="profile-panel-actions">
+                            <span class="profile-panel-note">Latest {{ transactions|length }}</span>
+                            <a href="{{ url_for('add_expense') }}" class="btn-add-expense">Add Expense</a>
+                        </div>
                     </div>
                     <div class="table-scroll">
                         <table class="profile-table">
@@ -51,6 +83,7 @@
                                     <th scope="col">Description</th>
                                     <th scope="col">Category</th>
                                     <th scope="col" class="txn-amount">Amount</th>
+                                    <th scope="col" class="txn-actions">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -66,10 +99,18 @@
                                         </span>
                                     </td>
                                     <td class="txn-amount">{{ txn.amount }}</td>
+                                    <td class="txn-actions">
+                                        <a href="/expenses/{{ txn.id }}/edit" class="txn-edit-link">Edit</a>
+                                        <form method="POST" action="/expenses/{{ txn.id }}/delete"
+                                              style="display:inline"
+                                              onsubmit="return confirm('Delete this expense?')">
+                                            <button type="submit" class="btn-delete">Delete</button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 {% else %}
                                 <tr>
-                                    <td colspan="4" class="empty-state">No transactions yet.</td>
+                                    <td colspan="5" class="empty-state">No transactions yet.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
